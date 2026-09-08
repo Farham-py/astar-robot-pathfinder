@@ -23,12 +23,9 @@ FinalProject-Farham/
 │   └── Astar.h / .cpp # Astar class: the pathfinding algorithm
 ├── Map/
 │   ├── Map.txt           # Main map used by the program
-│   └── Farhams_map.txt   # A second, custom test map
 ├── Result/
-│   ├── Result.txt    # Output for Map.txt
-│   └── Result2.txt   # Output for Farhams_map.txt
-├── Astar_Farham_map.exe   # Run the custom map
-├── Astar_Auriga_map.exe   # Run the main map
+│   ├── Result.txt    # Output for Map.txtt
+├── Astar_Pathfinder.exe   # Run the custom map
 └── README.md
 ```
 
@@ -51,20 +48,18 @@ The provided map is 120 rows by 150 columns.
 From the project's root folder, compile with:
 
 ```bash
-g++ -std=c++17 -Wall -Wextra -o Astar_Auriga_map Src/main.cpp Src/map.cpp Src/Astar.cpp
+g++ -std=c++17 -Wall -Wextra -o Astar_Pathfinder Src/main.cpp Src/map.cpp Src/Astar.cpp
 ```
 
-This produces an `Astar_Auriga_map` executable.
+This produces an `Astar_Pathfinder` executable.
 
 ## How to Run
 
 ```bash
-./Astar_Auriga_map
+./Astar_Pathfinder
 ```
 
 By default, the program reads `Map/Map.txt` and writes the result to `Result/Result.txt`. Make sure you run it from the project's root folder, so the relative paths to `Map/` and `Result/` work correctly.
-
-To run it on the second map (`Farhams_map.txt`) instead, open `Src/main.cpp` and swap which `inputFile` / `outputFile` lines are commented out, then rebuild.
 
 ## Example Output
 
