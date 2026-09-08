@@ -9,10 +9,10 @@ using namespace std;
 bool appendPathInfo(const string& filename, const vector<Point>& path) ; 
 int main() {
 
-    const string inputFile = "Map.txt";
-    const string outputFile = "Result.txt";
-    //const string inputFile = "Farham's_map.txt";
-    //const string outputFile = "Result2.txt";
+    const string inputFile = "Map/Map.txt";
+    const string outputFile = "Result/Result.txt";
+    //const string inputFile = "Map/Farhams_map.txt";
+    //const string outputFile = "Result/Result2.txt";
 
     Map map;
     if (!map.load(inputFile)) {
