@@ -7,6 +7,7 @@
 using namespace std;
 
 bool appendPathInfo(const string& filename, const vector<Point>& path) ; 
+
 int main() {
 
     const string inputFile = "Map/Map.txt";
