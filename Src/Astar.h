@@ -20,6 +20,7 @@ public :
 private :
     const Map& map;
     int heuristic(const Point& a, const Point& b) const;
+    int wallPenalty(const Point& p) const;
     std::vector<Point> getNeighbors(const Point& p) const;
     std::vector<Point> reconstructPath(const std::vector<std::vector<Point>>& cameFrom, Point current) const;
 };
