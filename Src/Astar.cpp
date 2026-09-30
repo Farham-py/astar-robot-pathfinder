@@ -9,7 +9,7 @@ using namespace std;
 const int wallPenalty_1 = 10 ; 
 const int wallPenalty_2 = 6 ;
 const int wallPenalty_3 = 3 ;
-
+const int wallPenalty_4 = 1 ;
 int Astar::heuristic(const Point& a, const Point& b) const {
     
     return abs(a.row - b.row) + abs(a.col - b.col);
@@ -40,8 +40,8 @@ vector<Point> Astar::reconstructPath(const vector<vector<Point>>& cameFrom, Poin
 }
 
 int Astar::wallPenalty(const Point &p) const {
-    int penalty[] = {wallPenalty_1, wallPenalty_2, wallPenalty_3} ;
-    for (int d =1 ; d<=3 ; d++){
+    int penalty[] = {wallPenalty_1, wallPenalty_2, wallPenalty_3, wallPenalty_4} ;
+    for (int d =1 ; d<=4 ; d++){
         for(int dr = -d ; dr <= d ; dr++){
             for(int dc=-d ; dc <= d ; dc++){
                 if (max(abs(dr), abs(dc)) != d) continue; 
@@ -50,7 +50,7 @@ int Astar::wallPenalty(const Point &p) const {
             }
         }
     }
-    return 0; 
+    return 0;
 }
 
 vector<Point> Astar::findPath() {
