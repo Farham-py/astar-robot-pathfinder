@@ -1,80 +1,157 @@
 # A* Robot Path Planning
 
-A small C++ program that finds the shortest path for a robot moving across a 2D grid map, using the A* search algorithm. The robot starts at a point marked `S` and needs to reach a point marked `E`, avoiding obstacles (`#`) along the way. The found path is marked on the map and saved to a result file.
+A C++ implementation of the **A* (A-Star) search algorithm** for robot path planning on a 2D grid map. The program finds a route from a start position (`S`) to a destination (`E`) while avoiding obstacles (`#`).
+
+Unlike basic A* implementations that assign the same cost to every movement, this project introduces a **wall-proximity penalty system**. The robot considers nearby obstacles when calculating movement costs, encouraging paths that maintain a safer distance from walls whenever possible.
+
+The resulting path is reconstructed, marked on the map with `*`, and saved to an output file.
 
 ## Features
 
-- Loads a grid map from a text file
-- Finds the shortest path from start to end using A* (with Manhattan distance as the heuristic)
-- Marks the path on the map with `*`
-- Saves the result to a file, including:
-  - The map with the path drawn on it
-  - The path length (number of moves)
-  - The full list of coordinates the robot passes through
-- Also prints a summary to the console
+- **Grid-based map loading:** Reads a 2D environment from a plain text file.
+- **A* pathfinding:** Uses the A* search algorithm to find a minimum-cost path.
+- **Manhattan distance heuristic:** Estimates the remaining distance to the destination using four-directional movement.
+- **Wall-proximity penalty:** Assigns additional movement costs based on nearby obstacles.
+- **Four-directional movement:** Supports moving up, down, left, and right.
+- **Obstacle avoidance:** Prevents the robot from moving through walls or other non-walkable cells.
+- **Path reconstruction:** Records the sequence of grid coordinates from start to destination.
+- **Map visualization:** Marks the calculated path using `*`.
+- **Result export:** Saves the marked map, path information, and path cost or length (depending on the output implementation) to a result file.
+- **Console output:** Displays a summary of the pathfinding result.
+
+## How the Wall-Proximity Penalty Works
+
+The algorithm assigns an additional cost to a cell depending on how close it is to an obstacle.
+
+| Distance to nearest obstacle | Additional cost |
+|---|---:|
+| 1 grid cell | 10 |
+| 2 grid cells | 6 |
+| 3 grid cells | 3 |
+| 4 grid cells | 1 |
+| More than 4 grid cells | 0 |
+
+The algorithm checks the surrounding area in expanding square-shaped regions. When it finds an obstacle at the nearest distance, it returns the corresponding penalty.
+
+For each movement, the cost is calculated as:
+
+```cpp
+tentativeG = current.g + wallPenalty(neighbor) + 1;
+```
+
+Where:
+
+- `current.g` is the accumulated cost of reaching the current cell.
+- `wallPenalty(neighbor)` is the additional cost associated with nearby obstacles.
+- `1` is the base cost of moving to an adjacent cell.
+
+This encourages the robot to prefer routes with more clearance from walls, even when those routes require more movements.
+
+**Important:** The penalty system encourages wall clearance, but it does not guarantee a particular physical safety distance. The penalty values are configurable and should be tuned to the map resolution and robot dimensions.
+
+## How A* Works in This Project
+
+The algorithm uses the following cost function:
+
+\[
+f(n)=g(n)+h(n)
+\]
+
+Where:
+
+- \(g(n)\): Accumulated movement cost, including wall penalties.
+- \(h(n)\): Manhattan distance from the current cell to the destination.
+- \(f(n)\): Estimated total cost of a route through the current cell.
+
+The Manhattan distance heuristic is:
+
+\[
+h(n)=|r_n-r_g|+|c_n-c_g|
+\]
+
+Here, \(r_n,c_n\) are the current cell coordinates and \(r_g,c_g\) are the goal coordinates.
+
+The implementation maintains:
+
+- **Open set:** A priority queue of nodes waiting to be explored, ordered by their estimated total cost.
+- **G-score grid:** Stores the best known cost to reach each cell.
+- **Visited grid:** Tracks cells that have already been processed.
+- **Came-from grid:** Stores predecessor cells to reconstruct the final path.
+
+The algorithm stops when it reaches the destination or when no reachable route remains.
 
 ## Project Structure
 
-```
+```text
 FinalProject-Farham/
 ├── Src/
-│   ├── main.cpp       # Program entry point, ties everything together
-│   ├── map.h / .cpp   # Map class: loading, saving, and grid checks
-│   └── Astar.h / .cpp # Astar class: the pathfinding algorithm
+│   ├── main.cpp       # Program entry point
+│   ├── map.h / .cpp   # Map loading and grid operations
+│   └── AStar.h / .cpp # A* algorithm and wall penalties
 ├── Map/
-│   ├── Map.txt           # Main map used by the program
-│   └── Farhams_map.txt   # A second, custom test map
+│   └── Farhams_map.txt # Custom test map
 ├── Result/
-│   ├── Result.txt    # Output for Map.txt
-│   └── Result2.txt   # Output for Farhams_map.txt
-├── Astar_Farham_map.exe   # Run the custom map
-├── Astar_Auriga_map.exe   # Run the main map
+│   └── Farham_custom_result.txt    # Custom map output
+├── Astar_Farham_map   # Custom map executable (after building)
 └── README.md
 ```
 
-## How the Map Works
+## Map Format
 
-The map is a plain text grid where each character means:
+The map is represented as a plain-text grid. Each character represents a cell in the environment.
 
-| Character | Meaning        |
-|-----------|----------------|
-| `S`       | Start position |
-| `E`       | End position   |
-| `#`       | Wall / obstacle (not walkable) |
-| `o`       | Open, walkable space |
-| `*`       | Path marked by the program in the result |
+| Character | Meaning |
+|---|---|
+| `S` | Robot's starting position |
+| `E` | Destination |
+| `#` | Obstacle or wall |
+| `o` | Open, walkable space |
+| `*` | Calculated path, marked in the result map |
 
-The provided map is 120 rows by 150 columns.
+The original map is described as **120 rows by 150 columns**. Make sure the map file contains valid start and destination markers and that the map dimensions match the loaded grid.
+
+## Requirements
+
+- A C++ compiler supporting C++17
+- Standard C++ library
+- A terminal or IDE, such as VS Code
+
+No external pathfinding libraries are required.
 
 ## How to Build
 
-From the project's root folder, compile with:
+Open a terminal in the project's root directory and run:
 
 ```bash
-g++ -std=c++17 -Wall -Wextra -o Astar_Auriga_map Src/main.cpp Src/map.cpp Src/Astar.cpp
+g++ -std=c++17 -Wall -Wextra -o Farham_custom_map \
+    Src/main.cpp Src/map.cpp Src/AStar.cpp
 ```
 
-This produces an `Astar_Auriga_map` executable.
+This generates the `Farham_custom_map` executable.
 
 ## How to Run
 
+From the project root:
+
 ```bash
-./Astar_Auriga_map
+./Farham_custom_map
 ```
-
-By default, the program reads `Map/Map.txt` and writes the result to `Result/Result.txt`. Make sure you run it from the project's root folder, so the relative paths to `Map/` and `Result/` work correctly.
-
-To run it on the second map (`Farhams_map.txt`) instead, open `Src/main.cpp` and swap which `inputFile` / `outputFile` lines are commented out, then rebuild.
 
 ## Example Output
 
-Console:
-```
-Path found sucessfully.
+A successful run may display output similar to the following, depending on the map and output format implemented in `main.cpp`:
+
+```text
+Path found successfully.
 Path length (number of moves): 162
 Path (row, col):
 (4, 5) (4, 6) (4, 7) ...
 ```
 
-The same information, along with the marked-up map, is written to `Result/Result.txt`.
+The result file contains the map with the calculated path marked using `*`, along with the path information supported by the output implementation.
 
+## Author
+
+**Farham**
+
+GitHub: [@Farham-py](https://github.com/Farham-py)
