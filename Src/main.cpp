@@ -10,10 +10,10 @@ bool appendPathInfo(const string& filename, const vector<Point>& path) ;
 
 int main() {
 
-    const string inputFile = "Map/Map.txt";
-    const string outputFile = "Result/Result.txt";
-    //const string inputFile = "Map/Farhams_map.txt";
-    //const string outputFile = "Result/Result2.txt";
+    //const string inputFile = "Map/Map.txt";
+    //const string outputFile = "Result/Result.txt";
+    const string inputFile = "Map/Farham_custom_map.txt";
+    const string outputFile = "Result/Farham_custom_result.txt";
 
     Map map;
     if (!map.load(inputFile)) {
